@@ -1,4 +1,6 @@
--- Student Management System Database Schema
+-- Student Management System Database Schema (MySQL only)
+-- NOTE: The app defaults to SQLite (auto-created). This file is only needed
+--       if you switch src/com/studentms/util/DBConnection.java to MySQL.
 CREATE DATABASE IF NOT EXISTS student_management;
 USE student_management;
 
