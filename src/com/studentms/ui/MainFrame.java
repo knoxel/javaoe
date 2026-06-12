@@ -43,7 +43,7 @@ public class MainFrame extends JFrame {
         contentPanel.setBackground(Theme.BG_MAIN);
 
         dashboardPanel = new DashboardPanel();
-        studentPanel = new StudentPanel(this);
+        studentPanel = new StudentPanel(this, currentUser);
         addStudentPanel = new AddStudentPanel(this);
         departmentPanel = new DepartmentPanel();
 
@@ -116,7 +116,9 @@ public class MainFrame extends JFrame {
 
         sidebar.add(dashboardBtn);
         sidebar.add(studentsBtn);
-        sidebar.add(addStudentBtn);
+        if ("ADMIN".equals(currentUser.getRole())) {
+            sidebar.add(addStudentBtn);
+        }
         sidebar.add(departmentsBtn);
 
         sidebar.add(Box.createVerticalGlue());

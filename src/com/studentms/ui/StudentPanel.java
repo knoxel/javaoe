@@ -2,6 +2,7 @@ package com.studentms.ui;
 
 import com.studentms.dao.StudentDAO;
 import com.studentms.model.Student;
+import com.studentms.model.User;
 import com.studentms.util.Theme;
 import javax.swing.*;
 import javax.swing.table.*;
@@ -14,9 +15,11 @@ public class StudentPanel extends JPanel {
     private JTextField searchField;
     private StudentDAO dao;
     private MainFrame mainFrame;
+    private User currentUser;
 
-    public StudentPanel(MainFrame mainFrame) {
+    public StudentPanel(MainFrame mainFrame, User currentUser) {
         this.mainFrame = mainFrame;
+        this.currentUser = currentUser;
         dao = new StudentDAO();
         setLayout(new BorderLayout());
         setBackground(Theme.BG_MAIN);
@@ -70,7 +73,9 @@ public class StudentPanel extends JPanel {
 
         actionsPanel.add(searchField);
         actionsPanel.add(refreshBtn);
-        actionsPanel.add(addBtn);
+        if ("ADMIN".equals(currentUser.getRole())) {
+            actionsPanel.add(addBtn);
+        }
         header.add(actionsPanel, BorderLayout.EAST);
 
         add(header, BorderLayout.NORTH);
@@ -139,8 +144,10 @@ public class StudentPanel extends JPanel {
         private JButton viewBtn = new JButton("View");
         private JButton editBtn = new JButton("Edit");
         private JButton deleteBtn = new JButton("Delete");
+        private boolean isAdmin;
 
         public ButtonRenderer() {
+            isAdmin = "ADMIN".equals(currentUser.getRole());
             setLayout(new FlowLayout(FlowLayout.CENTER, 4, 4));
             setOpaque(true);
 
@@ -149,8 +156,10 @@ public class StudentPanel extends JPanel {
             styleBtn(deleteBtn, Theme.DANGER);
 
             add(viewBtn);
-            add(editBtn);
-            add(deleteBtn);
+            if (isAdmin) {
+                add(editBtn);
+                add(deleteBtn);
+            }
         }
 
         private void styleBtn(JButton btn, Color bg) {
@@ -174,8 +183,10 @@ public class StudentPanel extends JPanel {
         private JPanel panel;
         private JButton viewBtn, editBtn, deleteBtn;
         private int currentRow;
+        private boolean isAdmin;
 
         public ButtonEditor() {
+            isAdmin = "ADMIN".equals(currentUser.getRole());
             panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 4));
             viewBtn = createBtn("View", Theme.PRIMARY);
             editBtn = createBtn("Edit", Theme.WARNING);
@@ -185,9 +196,23 @@ public class StudentPanel extends JPanel {
             editBtn.addActionListener(e -> editStudent());
             deleteBtn.addActionListener(e -> deleteStudent());
 
+            panel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mousePressed(java.awt.event.MouseEvent e) {
+                    java.awt.Point point = e.getPoint();
+                    for (java.awt.Component c : panel.getComponents()) {
+                        if (c instanceof JButton && c.getBounds().contains(point)) {
+                            ((JButton) c).doClick();
+                            break;
+                        }
+                    }
+                }
+            });
+
             panel.add(viewBtn);
-            panel.add(editBtn);
-            panel.add(deleteBtn);
+            if (isAdmin) {
+                panel.add(editBtn);
+                panel.add(deleteBtn);
+            }
         }
 
         private JButton createBtn(String text, Color bg) {
