@@ -1,0 +1,28 @@
+# Java
+*.class
+*.jar
+*.war
+*.nar
+build/
+dist/
+target/
+
+# IDE
+.classpath
+.project
+.settings/
+*.iml
+.idea/
+*.ipr
+*.iws
+.vscode/
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Project specific
+lib/*.jar
