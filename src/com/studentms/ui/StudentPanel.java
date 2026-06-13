@@ -124,6 +124,11 @@ public class StudentPanel extends JPanel {
         public int getColumnCount() { return columns.length; }
         public String getColumnName(int col) { return columns[col]; }
 
+        @Override
+        public boolean isCellEditable(int row, int col) {
+            return col == 7;
+        }
+
         public Object getValueAt(int row, int col) {
             Student s = students.get(row);
             switch (col) {
@@ -192,20 +197,17 @@ public class StudentPanel extends JPanel {
             editBtn = createBtn("Edit", Theme.WARNING);
             deleteBtn = createBtn("Delete", Theme.DANGER);
 
-            viewBtn.addActionListener(e -> viewStudent());
-            editBtn.addActionListener(e -> editStudent());
-            deleteBtn.addActionListener(e -> deleteStudent());
-
-            panel.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mousePressed(java.awt.event.MouseEvent e) {
-                    java.awt.Point point = e.getPoint();
-                    for (java.awt.Component c : panel.getComponents()) {
-                        if (c instanceof JButton && c.getBounds().contains(point)) {
-                            ((JButton) c).doClick();
-                            break;
-                        }
-                    }
-                }
+            viewBtn.addActionListener(e -> {
+                fireEditingStopped();
+                viewStudent();
+            });
+            editBtn.addActionListener(e -> {
+                fireEditingStopped();
+                editStudent();
+            });
+            deleteBtn.addActionListener(e -> {
+                fireEditingStopped();
+                deleteStudent();
             });
 
             panel.add(viewBtn);
@@ -224,6 +226,7 @@ public class StudentPanel extends JPanel {
             btn.setBorderPainted(false);
             btn.setOpaque(true);
             btn.setPreferredSize(new Dimension(52, 26));
+            btn.setFocusable(false);
             return btn;
         }
 
